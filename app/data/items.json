@@ -1,0 +1,182 @@
+[
+  {
+    "id": "railgun-mk2",
+    "name": "Railgun Mk II",
+    "type": "Weapon",
+    "rarity": "Epic",
+    "locations": [
+      "Blue Gate — high-tier ARC facilities and military compounds",
+      "Spaceport — Launch Towers and Arrival/Departure buildings",
+      "World events and boss drops on Hard+"
+    ],
+    "notes": "Recycles into advanced mechanical components."
+  },
+  {
+    "id": "exodus-module",
+    "name": "Exodus Module",
+    "type": "Material",
+    "rarity": "Epic",
+    "locations": [
+      "Blue Gate — ARC facilities and industrial zones",
+      "Spaceport — restricted areas and control rooms",
+      "Rare drop from Matriarch and Harvester events"
+    ],
+    "notes": "One of the hardest-to-find components; used for high-tier crafting."
+  },
+  {
+    "id": "advanced-mechanical-parts",
+    "name": "Advanced Mechanical Parts",
+    "type": "Material",
+    "rarity": "Epic",
+    "locations": [
+      "Buried City — Hospital and Space Travel hub",
+      "Spaceport — mechanical bays and launch infrastructure",
+      "Dam Battlegrounds — Research & Administration, Control Tower"
+    ],
+    "notes": "Recycle rare weapons or find in industrial/military areas."
+  },
+  {
+    "id": "credits",
+    "name": "Credits",
+    "type": "Material",
+    "rarity": "Common",
+    "locations": [
+      "All maps — loot containers, supply caches, and defeated enemies",
+      "Dam Battlegrounds — Old Battlegrounds, Research & Administration",
+      "Buried City — Town Hall, Hospital"
+    ],
+    "notes": "Base currency; found everywhere but higher density in high-value POIs."
+  },
+  {
+    "id": "chemicals",
+    "name": "Chemicals",
+    "type": "Material",
+    "rarity": "Common",
+    "locations": [
+      "Buried City — Hospital and lab areas",
+      "Spaceport — research and maintenance zones",
+      "Dam Battlegrounds — industrial sections"
+    ],
+    "notes": "Common from medical and research loot."
+  },
+  {
+    "id": "batteries",
+    "name": "Batteries",
+    "type": "Material",
+    "rarity": "Common",
+    "locations": [
+      "All maps — electronics caches and ARC facilities",
+      "Spaceport — control rooms and launch towers",
+      "Blue Gate — power stations"
+    ],
+    "notes": "Frequently found in tech and power areas."
+  },
+  {
+    "id": "wires",
+    "name": "Wires",
+    "type": "Material",
+    "rarity": "Common",
+    "locations": [
+      "All maps — mechanical and electrical loot",
+      "Dam Battlegrounds — Control Tower, industrial zones",
+      "Buried City — Space Travel hub"
+    ],
+    "notes": "Base component from recycling and looting."
+  },
+  {
+    "id": "metal-rubber",
+    "name": "Metal & Rubber",
+    "type": "Material",
+    "rarity": "Common",
+    "locations": [
+      "All maps — common loot and recycling basic gear",
+      "Dam Battlegrounds — Old Battlegrounds, low-tier areas",
+      "Any map — supply crates and standard containers"
+    ],
+    "notes": "Basic materials from common weapons and gear."
+  },
+  {
+    "id": "rare-attachment",
+    "name": "Rare Weapon Attachments",
+    "type": "Gear",
+    "rarity": "Rare",
+    "locations": [
+      "Blue Gate — high-tier loot zones",
+      "Spaceport — Arrival/Departure buildings",
+      "Buried City — Hospital, Town Hall; world event rewards"
+    ],
+    "notes": "Often worth crafting if you have the materials; can drop from elite enemies."
+  },
+  {
+    "id": "medical-supplies",
+    "name": "Medical Supplies",
+    "type": "Gear",
+    "rarity": "Common",
+    "locations": [
+      "Buried City — Hospital and clinic areas",
+      "All maps — medical caches and first-aid spawns",
+      "Dam Battlegrounds — Research & Administration"
+    ],
+    "notes": "Healing and support items; best density in Buried City Hospital."
+  },
+  {
+    "id": "control-tower-loot",
+    "name": "Control Tower Loot (Dam)",
+    "type": "Location",
+    "rarity": null,
+    "locations": [
+      "Dam Battlegrounds — Control Tower POI",
+      "One of the best loot spots on the starting map",
+      "Often has rare materials and weapons"
+    ],
+    "notes": "High-value POI on Dam Battlegrounds; 30 min rotation."
+  },
+  {
+    "id": "blue-gate-high-tier",
+    "name": "Blue Gate High-Tier Loot",
+    "type": "Location",
+    "rarity": null,
+    "locations": [
+      "Blue Gate map — unlock after 18 rounds",
+      "ARC facilities, military compounds, industrial zones",
+      "Best overall loot in the game; high difficulty"
+    ],
+    "notes": "30 min rotation; highest risk/reward."
+  },
+  {
+    "id": "spaceport-arrival",
+    "name": "Spaceport Arrival/Departure Loot",
+    "type": "Location",
+    "rarity": null,
+    "locations": [
+      "Spaceport — Arrival and Departure buildings",
+      "Launch Towers",
+      "Unlock after 12 rounds; 40 min rotation"
+    ],
+    "notes": "Top-tier loot on Spaceport; medium-high difficulty."
+  },
+  {
+    "id": "matriarch-harvester",
+    "name": "Matriarch & Harvester Event Drops",
+    "type": "Event",
+    "rarity": null,
+    "locations": [
+      "World events — Matriarch and Harvester when active",
+      "Check Events tab for active timers and maps",
+      "Epic materials and rare attachments possible"
+    ],
+    "notes": "Time-limited; use Speranza Events tab to see when they're live."
+  },
+  {
+    "id": "night-raid-dam",
+    "name": "Night Raid (Dam)",
+    "type": "Event",
+    "rarity": null,
+    "locations": [
+      "Dam Battlegrounds — during Night Raid event",
+      "Check Events tab for schedule",
+      "Unique modifiers and loot tables"
+    ],
+    "notes": "Event-specific; better loot when active."
+  }
+]

@@ -1,0 +1,467 @@
+{
+  "trialTypes": {
+    "damage-leapers": {
+      "id": "damage-leapers",
+      "image": "https://cdn.metaforge.app/arc-raiders/custom/matriarch.webp",
+      "name": "Damage Leapers",
+      "category": "combat",
+      "actionsTo3Stars": "2 kills with 2× = 3,520 pts",
+      "basePointsPerAction": 1760,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Dam Battlegrounds", "reason": "4 fixed spawn areas: Water Treatment, Hydroponic, Red Lake, Testing Annex" }
+      ],
+      "idealConditions": ["Night Raid", "EM Storm", "Cold Snap", "Locked Gate", "Hidden Bunker"],
+      "tips": [
+        "Rotate between the 4 spawn areas—enemies respawn every 5-7 minutes",
+        "With 2x modifier, only ~2 kills needed for 3 stars",
+        "Use Friendly Lobby to avoid PvP while farming"
+      ],
+      "strategies": [
+        "Land near Water Treatment or Hydroponic for quick first kills",
+        "Kill one group, move to the next—first group respawns by the time you circle back",
+        "Extract immediately after hitting 4,000+ points; don't risk death for extra score"
+      ],
+      "loadout": "Mobility + DPS. Hullcracker or Anvil IV for armor. Bring ziplines for quick rotation."
+    },
+    "damage-bastions": {
+      "id": "damage-bastions",
+      "name": "Damage Bastions",
+      "category": "combat",
+      "actionsTo3Stars": "2 kills with 2× = 4,500 pts",
+      "basePointsPerAction": 2250,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Spaceport", "reason": "Hidden Bunker condition—spawn near bunker entrance for consistent Bastion encounters" }
+      ],
+      "idealConditions": ["Hidden Bunker"],
+      "tips": [
+        "Target knee joints first to limit mobility",
+        "Deadline Mines and Wolfpack grenades are essential",
+        "2x modifier = 2 kills for 3 stars"
+      ],
+      "strategies": [
+        "Bring 80+ Heavy Ammo, 3-5 Deadline Mines, Wolfpack and Trailblazer grenades",
+        "Use Photoelectric Cloak for safe mine placement",
+        "Squad up for faster kills—points count for everyone"
+      ],
+      "loadout": "Heavy ammo (80+), Deadline Mines, Wolfpack grenades, Hullcracker or Anvil IV, Shield Rechargers."
+    },
+    "damage-rocketeers": {
+      "id": "damage-rocketeers",
+      "name": "Damage Rocketeers",
+      "category": "combat",
+      "actionsTo3Stars": "2 kills with 2× = 5,280 pts",
+      "basePointsPerAction": 1320,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "The Blue Gate", "reason": "Locked Gate condition—only 2 kills needed for 3 stars with 2x" }
+      ],
+      "idealConditions": ["Locked Gate", "EM Storm"],
+      "tips": [
+        "Shoot off thrusters to ground them—makes them much easier to finish",
+        "Jupiter + Wolfpack combo works extremely well",
+        "With 2x: 2 kills = 5,280 points (3 stars)"
+      ],
+      "strategies": [
+        "Focus on disabling flight first, then finish from cover",
+        "Use elevated positions—Rocketeers are easier when you have height advantage",
+        "Spaceport also has Rocketeer spawns during EM Storm"
+      ],
+      "loadout": "Jupiter, Wolfpack grenades, heavy ammo. Photoelectric Cloak for repositioning."
+    },
+    "damage-shredders": {
+      "id": "damage-shredders",
+      "name": "Damage Shredders",
+      "category": "combat",
+      "actionsTo3Stars": "3 kills with 2× = 4,158 pts",
+      "basePointsPerAction": 693,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Stella Montis", "reason": "Primary Shredder zone—highest density spawns" }
+      ],
+      "idealConditions": ["Night Raid", "EM Storm"],
+      "tips": [
+        "3 kills with 2x modifier = 3 stars",
+        "Hullcracker recommended for armor strip",
+        "Stella Montis is the most common trials zone for Shredders"
+      ],
+      "strategies": [
+        "Learn Shredder spawn points on Stella Montis—rotate between them",
+        "They're tanky; focus fire with squad or use armor-piercing weapons",
+        "Night Raid on Stella Montis = best possible conditions"
+      ],
+      "loadout": "Hullcracker for armor strip. Heavy ammo. Smoke for repositioning."
+    },
+    "damage-hornets": {
+      "id": "damage-hornets",
+      "name": "Damage Hornets",
+      "category": "combat",
+      "actionsTo3Stars": "~8–12 Hornets with 2×",
+      "basePointsPerAction": 0,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Any map with EM Storm", "reason": "EM Storm dramatically increases flying enemy spawns" }
+      ],
+      "idealConditions": ["Electromagnetic Storm"],
+      "tips": [
+        "Target center mass—not armored weak points",
+        "EM Storm is mandatory for efficient Hornet farming",
+        "Area damage helps when they swarm"
+      ],
+      "strategies": [
+        "Wait for EM Storm condition—don't waste time without it",
+        "Stay in open areas where Hornets cluster",
+        "Squad fire makes quick work of groups"
+      ],
+      "loadout": "Automatic weapons, area grenades. Mobility for dodging."
+    },
+    "damage-wasps": {
+      "id": "damage-wasps",
+      "name": "Damage Wasps",
+      "category": "combat",
+      "actionsTo3Stars": "~8–12 Wasps with 2×",
+      "basePointsPerAction": 0,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Stella Montis", "reason": "Wasp spawns in interior and exterior zones" },
+        { "map": "Buried City", "reason": "Indoor locations have consistent Wasp spawns" }
+      ],
+      "idealConditions": ["EM Storm", "Night Raid"],
+      "tips": [
+        "Similar to Hornets—EM Storm boosts flying enemy spawns",
+        "Search interior locations; Wasps spawn indoors",
+        "2x modifier halves the kills needed"
+      ],
+      "strategies": [
+        "Check buildings and enclosed areas first",
+        "Budget 3-star possible in 2-3 matches with 2x",
+        "Friendly Lobby reduces distractions"
+      ],
+      "loadout": "Rapid-fire weapons. Smoke for retreat. Light ammo for sustained fire."
+    },
+    "destroy-ticks": {
+      "id": "destroy-ticks",
+      "name": "Destroy Ticks",
+      "category": "combat",
+      "actionsTo3Stars": "~15–25 Ticks with 2×",
+      "basePointsPerAction": 0,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Dam Battlegrounds", "reason": "Swamp and water areas have Tick clusters" },
+        { "map": "Buried City", "reason": "Sewers and underground areas" }
+      ],
+      "idealConditions": ["Night Raid", "EM Storm", "Cold Snap"],
+      "tips": [
+        "Small enemies—area damage weapons excel",
+        "They often appear in groups; grenades are efficient",
+        "2x modifier makes this very quick"
+      ],
+      "strategies": [
+        "Wolfpack and area grenades clear groups fast",
+        "Rotate through known Tick spawn zones",
+        "Budget 3-star in 2-3 matches with 2x"
+      ],
+      "loadout": "Area damage: Wolfpack, Trailblazer. Ammo efficient weapons."
+    },
+    "destroy-fireballs": {
+      "id": "destroy-fireballs",
+      "name": "Destroy Fireballs",
+      "category": "combat",
+      "actionsTo3Stars": "6 kills with 2× = 4,368 pts",
+      "basePointsPerAction": 364,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Stella Montis", "reason": "Fireball spawns in interior locations" },
+        { "map": "Buried City", "reason": "Indoor areas, buildings" }
+      ],
+      "idealConditions": ["Night Raid", "EM Storm"],
+      "tips": [
+        "6 kills with 2x modifier = 3 stars",
+        "Search interior locations—they spawn indoors",
+        "Stella Montis and Buried City are best"
+      ],
+      "strategies": [
+        "Hit every building and enclosed space",
+        "They're fragile—any weapon works",
+        "Solo or squad both viable"
+      ],
+      "loadout": "Light/medium ammo. Mobility for building sweeps."
+    },
+    "damage-queens-matriarchs": {
+      "id": "damage-queens-matriarchs",
+      "name": "Damage Queens / Matriarchs",
+      "category": "combat",
+      "actionsTo3Stars": "~25% of Queen or 1 Matriarch with 2×",
+      "basePointsPerAction": 0,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Stella Montis", "reason": "Matriarch spawns during world events" },
+        { "map": "Any map with Matriarch event", "reason": "Check Events tab for active Matriarch" }
+      ],
+      "idealConditions": ["Night Raid", "Matriarch event active"],
+      "tips": [
+        "Queen is worth more points than Matriarch—prioritize if both spawn",
+        "Target legs and armor plates first, then the core",
+        "~16,000 max per Queen with 2x"
+      ],
+      "strategies": [
+        "Coordinate with Events schedule—run when Matriarch is live",
+        "Squad strongly recommended; these are boss-tier",
+        "Heavy ammo, mines, full consumables"
+      ],
+      "loadout": "Hullcracker, 80+ heavy ammo, Deadline Mines, Wolfpack, Shield Rechargers, Adrenaline."
+    },
+    "first-wave-husks": {
+      "id": "first-wave-husks",
+      "name": "Search First Wave Husks",
+      "category": "scavenging",
+      "actionsTo3Stars": "7 husks with 2× = 4,200 pts",
+      "basePointsPerAction": 300,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Spaceport", "reason": "EM Storm—high-density clusters near main buildings" }
+      ],
+      "idealConditions": ["Electromagnetic Storm"],
+      "tips": [
+        "7 husks with 2x modifier = 4,200 points (3 stars)",
+        "Spaceport EM Storm has best density",
+        "Optimized 2-match strategy possible"
+      ],
+      "strategies": [
+        "Land near main buildings—husks cluster there",
+        "Split zones with teammates; everyone gets points",
+        "Mobility over combat—ziplines, snap hooks"
+      ],
+      "loadout": "Ziplines, snap hooks, smoke. Minimal combat gear."
+    },
+    "open-arc-probes": {
+      "id": "open-arc-probes",
+      "image": "https://cdn.metaforge.app/arc-raiders/custom/probe.webp",
+      "name": "Open ARC Probes",
+      "category": "scavenging",
+      "actionsTo3Stars": "6 probes with 2× = 4,002 pts",
+      "basePointsPerAction": 667,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Spaceport", "reason": "Rooftops, fuel storage, control tower—bring ziplines" }
+      ],
+      "idealConditions": ["EM Storm", "Night Raid"],
+      "tips": [
+        "6 probes with 2x = 4,002 points (3 stars)",
+        "Rooftop access is key—ziplines and snap hooks essential",
+        "Probes spawn at elevated positions"
+      ],
+      "strategies": [
+        "Plan route: control tower → fuel storage → rooftops",
+        "Budget 3-star in 2-3 matches",
+        "Solo works well—no competition for probes"
+      ],
+      "loadout": "Ziplines, snap hooks. Speed and vertical mobility."
+    },
+    "hidden-bunker-downloads": {
+      "id": "hidden-bunker-downloads",
+      "name": "Hidden Bunker Data Downloads",
+      "category": "scavenging",
+      "actionsTo3Stars": "5 computers with 2× = 4,000 pts",
+      "basePointsPerAction": 400,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Spaceport", "reason": "Activate 4-6 satellites outside, then 8 computers inside" }
+      ],
+      "idealConditions": ["Hidden Bunker"],
+      "tips": [
+        "Max 6,400 points possible—5 computers with 2x = 4,000",
+        "Only available when Hidden Bunker condition is active",
+        "Activate satellites first, then enter bunker"
+      ],
+      "strategies": [
+        "Satellite activation outside is step 1",
+        "8 computers inside—prioritize speed",
+        "Squad can split: some outside, some in"
+      ],
+      "loadout": "Mobility. No heavy combat needed. Smoke for escapes."
+    },
+    "ground-arcs": {
+      "id": "ground-arcs",
+      "name": "Damage Ground-Based ARCs",
+      "category": "combat",
+      "actionsTo3Stars": "~2,700 dmg to Bastions with 2×",
+      "basePointsPerAction": 0.75,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Spaceport", "reason": "Hidden Bunker—Bastions and Bombardiers for best points-per-damage" }
+      ],
+      "idealConditions": ["Hidden Bunker"],
+      "tips": [
+        "0.7-0.8 points per damage—Bastions/Bombardiers best ratio",
+        "Bring 80+ heavy ammo",
+        "Focus on large ground ARCs, not flying"
+      ],
+      "strategies": [
+        "Bastions and Bombardiers give best efficiency",
+        "Avoid wasting ammo on small fry",
+        "One good Bastion kill = significant progress"
+      ],
+      "loadout": "80+ heavy ammo, Hullcracker, mines. DPS focus."
+    },
+    "deliver-carriables": {
+      "id": "deliver-carriables",
+      "name": "Deliver Carriables",
+      "category": "scavenging",
+      "actionsTo3Stars": "8 deliveries with 2× = 4,000 pts",
+      "basePointsPerAction": 500,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Dam Battlegrounds", "reason": "6 field depots; Power Generation Complex and Water Towers closest together" }
+      ],
+      "idealConditions": ["Night Raid", "EM Storm"],
+      "tips": [
+        "8 deliveries with 2x = 4,000 points",
+        "Plan route between nearest depots",
+        "Power Generation Complex ↔ Water Towers is fastest loop"
+      ],
+      "strategies": [
+        "Land near Power Generation or Water Towers",
+        "Grab carriables, deliver, repeat",
+        "Squad can run parallel routes"
+      ],
+      "loadout": "Mobility. Ziplines. No heavy combat gear."
+    },
+    "harvest-plants": {
+      "id": "harvest-plants",
+      "name": "Harvest Plants",
+      "category": "scavenging",
+      "actionsTo3Stars": "16 plants with 2× = 4,000 pts",
+      "basePointsPerAction": 250,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Dam Battlegrounds", "reason": "Swamp area: 60+ mushrooms, 40+ Great Mullein" }
+      ],
+      "idealConditions": ["Night Raid", "Cold Snap"],
+      "tips": [
+        "16 plants with 2x = 4,000 points",
+        "Swamp has highest density—split zones with teammates",
+        "Mushrooms and Great Mullein both count"
+      ],
+      "strategies": [
+        "Land in swamp, sweep systematically",
+        "Teammates can cover different quadrants",
+        "Low combat—prioritize speed"
+      ],
+      "loadout": "Light gear. Mobility. No heavy ammo needed."
+    },
+    "frozen-containers": {
+      "id": "frozen-containers",
+      "name": "Open Frozen Containers",
+      "category": "scavenging",
+      "actionsTo3Stars": "2 containers with 2× = 4,000 pts",
+      "basePointsPerAction": 1000,
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Any Cold Snap map", "reason": "Only available during Cold Snap condition" }
+      ],
+      "idealConditions": ["Cold Snap"],
+      "tips": [
+        "2 containers with 2x = 4,000 points exactly",
+        "Only during Cold Snap—check events for active maps",
+        "Easiest 3-star when condition is live"
+      ],
+      "strategies": [
+        "Wait for Cold Snap—don't attempt without it",
+        "Know container spawn locations on Cold Snap maps",
+        "Quick in-and-out run"
+      ],
+      "loadout": "Mobility. Minimal combat. Extract fast."
+    },
+    "loot-birds-nests": {
+      "id": "loot-birds-nests",
+      "image": "https://cdn.metaforge.app/arc-raiders/custom/birdcity.webp",
+      "name": "Loot Bird's Nests",
+      "category": "scavenging",
+      "actionsTo3Stars": "~8–10 nests with 2×",
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Buried City", "reason": "Bird City condition—search chimneys on rooftops for nests" }
+      ],
+      "idealConditions": ["Bird City"],
+      "tips": [
+        "Bird City is a minor map condition—only on Buried City",
+        "Search Eastern side of map for best density",
+        "Rare Rubber Ducks spawn in chimneys—great for credits"
+      ],
+      "strategies": [
+        "Route: Plaza Rosa → Church Ruins → Piazza Arbusto → Town Hall → Corso Da Vinci → Santa Maria Houses → Main Street",
+        "Use Ziplines and Snap Hook to stay on roofs—avoids ground ARCs",
+        "Watch for Rocketeers; keep Wolfpacks for emergencies"
+      ],
+      "loadout": "Snap Hook, 6 Ziplines, 15 Adrenaline Shots. Mobility over combat."
+    },
+    "damage-spotters": {
+      "id": "damage-spotters",
+      "image": "https://cdn.metaforge.app/arc-raiders/custom/electrical.webp",
+      "name": "Damage Spotters",
+      "category": "combat",
+      "actionsTo3Stars": "~4–6 Spotters with 2×",
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Buried City", "reason": "Bombardier spawns with Spotters during EM Storm" },
+        { "map": "Spaceport", "reason": "Bombardier + Spotter pairs; EM Storm or Night Raid" }
+      ],
+      "idealConditions": ["Electromagnetic Storm", "Night Raid"],
+      "tips": [
+        "Spotters are flying drones that assist Bombardiers—shoot them to blind the Bombardier",
+        "Spotters respawn after being destroyed—keep Bombardier alive to farm",
+        "2x modifier halves the Spotters needed for 3 stars"
+      ],
+      "strategies": [
+        "Find elevated position with cover near a Bombardier",
+        "Shoot Spotters to draw them close, then destroy both",
+        "Repeat as they respawn; extract when you hit 4,000+"
+      ],
+      "loadout": "Anvil/Ferro, Renegade III/IV. Herbal Bandages, Shield Rechargers."
+    },
+    "medical-research-containers": {
+      "id": "medical-research-containers",
+      "image": "https://cdn.metaforge.app/arc-raiders/custom/cache.webp",
+      "name": "Search Containers in Medical Research Wing",
+      "category": "scavenging",
+      "actionsTo3Stars": "~15–20 containers",
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Stella Montis", "reason": "Medical Research Wing on Western side—containers, cabinets, drawers" }
+      ],
+      "idealConditions": ["Night Raid"],
+      "tips": [
+        "Loot every interactible container—even if visually open",
+        "Area has Ticks, Sentry turrets, and Shredders—avoid combat",
+        "Free loadout works; Stella Montis is PvP-heavy so go light"
+      ],
+      "strategies": [
+        "Spawn on Stella Montis during Night Raid",
+        "Head to Medical Research Wing, loot all containers",
+        "Extract quickly—don't get greedy"
+      ],
+      "loadout": "Free loadout recommended. Minimal risk."
+    }
+  },
+  "currentWeekOverride": {
+    "weekStart": "2026-03-02",
+    "weekEnd": "2026-03-09",
+    "trialIds": [
+      "medical-research-containers",
+      "open-arc-probes",
+      "damage-spotters",
+      "loot-birds-nests",
+      "damage-leapers"
+    ]
+  },
+  "weeklyRotation": [
+    ["damage-leapers", "first-wave-husks", "damage-rocketeers", "damage-shredders", "destroy-fireballs"],
+    ["damage-bastions", "ground-arcs", "deliver-carriables", "open-arc-probes", "hidden-bunker-downloads"],
+    ["damage-hornets", "damage-wasps", "destroy-ticks", "damage-queens-matriarchs", "open-arc-probes"],
+    ["damage-shredders", "first-wave-husks", "damage-rocketeers", "damage-leapers", "destroy-fireballs"],
+    ["hidden-bunker-downloads", "damage-wasps", "damage-queens-matriarchs", "destroy-ticks", "open-arc-probes"],
+    ["harvest-plants", "deliver-carriables", "ground-arcs", "frozen-containers", "damage-bastions"]
+  ]
+}
