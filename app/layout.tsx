@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Speranza",
   description: "Your command center for Arc Raiders events, news, and community updates",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0D0D0D",
 };
 
 export default function RootLayout({

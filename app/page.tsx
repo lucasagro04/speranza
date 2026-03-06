@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type EventItem = {
   name: string;
@@ -93,7 +93,7 @@ function formatTrialsCountdown(ms: number) {
 
 const TABS: Tab[] = ["events", "trials", "twitch", "news"];
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>("events");
@@ -501,19 +501,20 @@ export default function Home() {
     });
 
     // Create smooth curve using cubic bezier curves for better smoothness
-    const createSmoothPath = (points: typeof points) => {
-      if (points.length < 2) return '';
-      if (points.length === 2) {
-        return `M ${points[0].x},${points[0].y} L ${points[1].x},${points[1].y}`;
+    type ChartPoint = { x: number; y: number; value: number; date: string };
+    const createSmoothPath = (pts: ChartPoint[]) => {
+      if (pts.length < 2) return '';
+      if (pts.length === 2) {
+        return `M ${pts[0].x},${pts[0].y} L ${pts[1].x},${pts[1].y}`;
       }
 
-      let path = `M ${points[0].x},${points[0].y}`;
+      let path = `M ${pts[0].x},${pts[0].y}`;
 
-      for (let i = 0; i < points.length - 1; i++) {
-        const current = points[i];
-        const next = points[i + 1];
-        const prev = i > 0 ? points[i - 1] : current;
-        const afterNext = i < points.length - 2 ? points[i + 2] : next;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const current = pts[i];
+        const next = pts[i + 1];
+        const prev = i > 0 ? pts[i - 1] : current;
+        const afterNext = i < pts.length - 2 ? pts[i + 2] : next;
 
         // Calculate control points for smooth cubic bezier curve
         const cp1x = current.x + (next.x - prev.x) * 0.15;
@@ -1414,5 +1415,17 @@ export default function Home() {
 
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-[#0D0D0D] text-[#ECECEC] flex items-center justify-center">
+        <div className="text-[#8E8E8E]">Loading...</div>
+      </main>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

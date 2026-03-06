@@ -112,7 +112,7 @@ export async function GET(request: Request) {
               winRate:
                 p.winRate ??
                 p.wr ??
-                (p.wins && p.wins + p.losses
+                (p.wins != null && p.losses != null && p.wins + p.losses > 0
                   ? parseFloat(
                       ((p.wins / (p.wins + p.losses)) * 100).toFixed(1)
                     )
@@ -280,7 +280,7 @@ export async function GET(request: Request) {
 
     return Response.json({
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       totalOnlinePlayers,
       trends,
       period: "daily",

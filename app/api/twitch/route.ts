@@ -188,7 +188,7 @@ export async function GET() {
     });
 
     // Sort: live streams first (by viewer count descending), then offline
-    formattedStreamers.sort((a, b) => {
+    formattedStreamers.sort((a: { isLive: boolean; viewerCount: number }, b: { isLive: boolean; viewerCount: number }) => {
       // Both live - sort by viewer count (highest first)
       if (a.isLive && b.isLive) {
         return b.viewerCount - a.viewerCount;
