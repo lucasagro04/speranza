@@ -2,7 +2,24 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { MissionCard } from "./components/MissionCard";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+function useRevealOnScroll<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => e.isIntersecting && setRevealed(true),
+      { threshold: 0.05, rootMargin: "0px 0px -40px 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, revealed };
+}
 
 type EventItem = {
   name: string;
@@ -113,15 +130,26 @@ function HomeContent() {
   const [playerStatsLastUpdated, setPlayerStatsLastUpdated] = useState<number | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; value: number; date: string } | null>(null);
 
-  // Email Notifications
-  const [userEmail, setUserEmail] = useState<string>("");
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [emailAlertsExpanded, setEmailAlertsExpanded] = useState(false);
-  const notifiedEventsRef = useRef<string[]>([]);
   const [now, setNow] = useState(() => Date.now());
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const [newsLastUpdated, setNewsLastUpdated] = useState<number | null>(null);
-  const [expandedTrials, setExpandedTrials] = useState<Set<string>>(new Set());
+  const [scheduleExpanded, setScheduleExpanded] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  const SCHEDULE_INITIAL_ROWS = 2;
+  const SCHEDULE_COLS = 3; // lg:grid-cols-3
+  const scheduleInitialCount = SCHEDULE_INITIAL_ROWS * SCHEDULE_COLS;
+  const eventsSectionRef = useRevealOnScroll<HTMLDivElement>();
+  const communitySectionRef = useRevealOnScroll<HTMLDivElement>();
+  const scheduleSectionRef = useRevealOnScroll<HTMLDivElement>();
+
+  // Parallax scroll
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Sync tab from URL (e.g. ?tab=events)
   useEffect(() => {
@@ -136,43 +164,6 @@ function HomeContent() {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-
-  // Load email from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("userEmail");
-    const enabled = localStorage.getItem("notificationsEnabled") === "true";
-    if (saved) {
-      setUserEmail(saved);
-      setNotificationsEnabled(enabled);
-    }
-  }, []);
-
-  // Check for event notifications every 2 minutes
-  useEffect(() => {
-    if (!notificationsEnabled || !userEmail) return;
-
-    const checkNotifications = async () => {
-      try {
-        const response = await fetch("/api/notifications/check", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: userEmail, notifiedEvents: notifiedEventsRef.current }),
-        });
-
-        const data = await response.json();
-        if (data.notifiedEvents) {
-          notifiedEventsRef.current = data.notifiedEvents;
-        }
-      } catch (err) {
-        console.error("Notification check failed:", err);
-      }
-    };
-
-    checkNotifications();
-    const interval = setInterval(checkNotifications, 120000);
-
-    return () => clearInterval(interval);
-  }, [notificationsEnabled, userEmail]);
 
   // Fetch events
   const eventsLengthRef = useRef(0);
@@ -562,56 +553,87 @@ function HomeContent() {
   );
 
   return (
-    <main className="min-h-screen bg-[#0D0D0D] text-[#ECECEC]">
-      <div className="mx-auto max-w-5xl px-6 py-10">
-        <header className="mb-8 flex flex-col gap-4">
-          <div>
-            <h1 className="text-4xl font-bold text-[#ECECEC]">
-              Speranza
-            </h1>
-            <p className="text-base text-[#8E8E8E] mt-2">
-              Your command center for events, news, and community updates
-            </p>
-          </div>
+    <main className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] relative">
+      {/* Hero Banner - partial height */}
+      <section
+        className="hero-banner relative h-[clamp(320px,50vh,450px)] overflow-hidden"
+        aria-label="Hero"
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url(/ARCRaiders_SuperHeroArt_NoLogo_3840x2160.webp)",
+            transform: `translateY(calc(${scrollY}px * 0.3))`,
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.6) 60%, var(--bg-base) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          }}
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
+          <h1
+            className="text-center font-bold text-white drop-shadow-lg"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              textShadow: "0 0 60px rgba(251,191,36,0.25), 0 0 120px rgba(251,191,36,0.1)",
+            }}
+          >
+            SPERANZA
+          </h1>
+          <p className="mt-3 text-center text-base font-normal text-[#a0a8b8] md:text-lg">
+            Your command center for events, news, and community updates
+          </p>
+        </div>
+      </section>
 
+      <div className="relative z-10 mx-auto max-w-5xl px-6 py-10">
+        <header className="mb-8 flex flex-col gap-4">
           {/* Tab Navigation */}
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setTab("events")}
-              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all ${
+              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all duration-300 ${
                 activeTab === "events"
-                  ? "bg-[#ECECEC] text-[#0D0D0D] border-[#ECECEC]"
-                  : "bg-transparent text-[#8E8E8E] border-[#3F3F3F] hover:border-[#5E5E5E] hover:text-[#B4B4B4]"
+                  ? "bg-white text-[var(--bg-base)] border-white"
+                  : "bg-transparent text-[var(--text-tertiary)] border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
-              Events & Community
+              Events
             </button>
             <button
               onClick={() => setTab("trials")}
-              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all ${
+              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all duration-300 ${
                 activeTab === "trials"
-                  ? "bg-[#ECECEC] text-[#0D0D0D] border-[#ECECEC]"
-                  : "bg-transparent text-[#8E8E8E] border-[#3F3F3F] hover:border-[#5E5E5E] hover:text-[#B4B4B4]"
+                  ? "bg-white text-[var(--bg-base)] border-white"
+                  : "bg-transparent text-[var(--text-tertiary)] border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
               Weekly Trials
             </button>
             <button
               onClick={() => setTab("twitch")}
-              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all ${
+              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all duration-300 ${
                 activeTab === "twitch"
-                  ? "bg-[#ECECEC] text-[#0D0D0D] border-[#ECECEC]"
-                  : "bg-transparent text-[#8E8E8E] border-[#3F3F3F] hover:border-[#5E5E5E] hover:text-[#B4B4B4]"
+                  ? "bg-white text-[var(--bg-base)] border-white"
+                  : "bg-transparent text-[var(--text-tertiary)] border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
               Live Streams
             </button>
             <button
               onClick={() => setTab("news")}
-              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all ${
+              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all duration-300 ${
                 activeTab === "news"
-                  ? "bg-[#ECECEC] text-[#0D0D0D] border-[#ECECEC]"
-                  : "bg-transparent text-[#8E8E8E] border-[#3F3F3F] hover:border-[#5E5E5E] hover:text-[#B4B4B4]"
+                  ? "bg-white text-[var(--bg-base)] border-white"
+                  : "bg-transparent text-[var(--text-tertiary)] border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
               News
@@ -629,8 +651,10 @@ function HomeContent() {
         )}
 
             {/* Active Events */}
-            <section className="mb-8">
-              <h2 className="mb-4 text-xl font-semibold text-[#ECECEC]">Active Events</h2>
+            <section ref={eventsSectionRef.ref} className={`mb-8 reveal-on-scroll ${eventsSectionRef.revealed ? "revealed" : ""}`}>
+              <h2 className="section-header mb-4 text-[clamp(1rem,2.5vw,1.4rem)] font-semibold text-white">
+                Active Events
+              </h2>
               {active.length === 0 ? (
                 <div className="text-[#B4B4B4]">No active events right now.</div>
               ) : (
@@ -640,7 +664,7 @@ function HomeContent() {
                     return (
                       <div
                         key={`${ev.map}-${ev.name}-${idx}`}
-                        className="flex gap-3 rounded-2xl border border-green-500/40 bg-gradient-to-br from-green-500/10 to-transparent p-4 hover:border-green-500/60 transition-all"
+                        className="card card-live flex gap-3 rounded-lg border border-green-500/40 bg-gradient-to-br from-green-500/10 to-white/[0.02] p-4 backdrop-blur-sm"
                       >
                         <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-[#3F3F3F] bg-[#0D0D0D]">
                           {ev.icon ? (
@@ -654,11 +678,11 @@ function HomeContent() {
                           ) : null}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-xs text-[#8E8E8E]">{ev.map}</div>
-                          <div className="truncate text-base font-semibold text-[#ECECEC]">
+                          <div className="text-xs font-medium uppercase tracking-wider text-[var(--text-tertiary)]">{ev.map}</div>
+                          <div className="truncate text-base font-semibold text-white">
                             {ev.name}
                           </div>
-                          <div className="mt-1.5 font-mono text-xl text-green-400">
+                          <div className="countdown mt-1.5 text-xl text-green-400">
                             {formatRemaining(remaining)}
                           </div>
                         </div>
@@ -670,51 +694,53 @@ function HomeContent() {
             </section>
 
             {/* Active Community */}
-            <section className="mb-8">
-              <h2 className="mb-4 text-xl font-semibold text-[#ECECEC]">Active Community</h2>
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] p-6">
+            <section ref={communitySectionRef.ref} className={`mb-8 reveal-on-scroll ${communitySectionRef.revealed ? "revealed" : ""}`} data-delay="1">
+              <h2 className="section-header mb-4 text-[clamp(1rem,2.5vw,1.4rem)] font-semibold text-white">
+                Active Community
+              </h2>
+              <div className="card rounded-lg p-6 backdrop-blur-sm">
               <div className="flex flex-wrap items-start justify-between gap-6 pb-6 mb-6 border-b border-[#2A2A2A]">
                 <div>
-                  <div className="text-sm text-[#8E8E8E] mb-2">Players Online Right Now</div>
+                  <div className="text-sm font-medium uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Players Online Right Now</div>
                   <div className="flex items-baseline gap-3">
-                    <div className="text-4xl font-bold text-[#ECECEC]">
+                    <div className="stat-value text-4xl font-bold text-white">
                         {totalOnlinePlayers > 0 ? totalOnlinePlayers.toLocaleString() : "—"}
                       </div>
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                      <span className="text-sm text-[#8E8E8E]">Live</span>
+                      <span className="text-sm text-[var(--text-tertiary)]">Live</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <h3 className="text-lg font-semibold text-[#ECECEC]">Player Trends</h3>
+                  <h3 className="text-lg font-semibold text-white">Player Trends</h3>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setTrendsPeriod("daily")}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-300 ${
                       trendsPeriod === "daily"
-                        ? "bg-[#ECECEC] text-[#0D0D0D]"
-                        : "bg-transparent text-[#8E8E8E] border border-[#3F3F3F] hover:border-[#5E5E5E]"
+                        ? "bg-white text-[var(--bg-base)]"
+                        : "bg-transparent text-[var(--text-tertiary)] border border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     Daily
                   </button>
                   <button
                     onClick={() => setTrendsPeriod("weekly")}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-300 ${
                       trendsPeriod === "weekly"
-                        ? "bg-[#ECECEC] text-[#0D0D0D]"
-                        : "bg-transparent text-[#8E8E8E] border border-[#3F3F3F] hover:border-[#5E5E5E]"
+                        ? "bg-white text-[var(--bg-base)]"
+                        : "bg-transparent text-[var(--text-tertiary)] border border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     Weekly
                   </button>
                   <button
                     onClick={() => setTrendsPeriod("monthly")}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-300 ${
                       trendsPeriod === "monthly"
-                        ? "bg-[#ECECEC] text-[#0D0D0D]"
-                        : "bg-transparent text-[#8E8E8E] border border-[#3F3F3F] hover:border-[#5E5E5E]"
+                        ? "bg-white text-[var(--bg-base)]"
+                        : "bg-transparent text-[var(--text-tertiary)] border border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     Monthly
@@ -876,26 +902,20 @@ function HomeContent() {
             </div>
             </section>
 
-            {notificationsEnabled && (
-              <div className="mb-6 flex items-center gap-1.5 text-sm text-green-400">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span className="text-xs">Email Alerts Active</span>
-              </div>
-            )}
-
         {/* Event schedule – by event type, 3 columns, scrollable list like ARCTracker */}
-        <section className="mb-8">
-          <h2 className="mb-4 text-xl font-semibold text-[#ECECEC]">Event schedule</h2>
+        <section ref={scheduleSectionRef.ref} className={`mb-8 reveal-on-scroll ${scheduleSectionRef.revealed ? "revealed" : ""}`} data-delay="2">
+          <h2 className="section-header mb-4 text-[clamp(1rem,2.5vw,1.4rem)] font-semibold text-white">
+            Event Schedule
+          </h2>
           {scheduleByEventType.length === 0 ? (
             <div className="text-[#B4B4B4]">No events scheduled.</div>
           ) : (
+            <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {scheduleByEventType.map(({ typeLabel, events: typeEvents }) => {
+              {(scheduleExpanded ? scheduleByEventType : scheduleByEventType.slice(0, scheduleInitialCount)).map(({ typeLabel, events: typeEvents }) => {
                 const headerIcon = typeEvents[0]?.icon;
                 return (
-                  <div key={typeLabel} className="rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] overflow-hidden flex flex-col">
+                  <div key={typeLabel} className="group card overflow-hidden flex flex-col backdrop-blur-sm">
                     <div className="px-4 py-3 border-b border-[#2A2A2A] bg-[#0D0D0D]/50 flex items-center gap-3 flex-shrink-0">
                       {headerIcon ? (
                         <div className="relative h-8 w-8 flex-shrink-0 rounded-lg overflow-hidden border border-[#3F3F3F] bg-[#0D0D0D]">
@@ -910,7 +930,7 @@ function HomeContent() {
                       ) : null}
                       <h3 className="text-sm font-semibold text-[#ECECEC] uppercase tracking-wider truncate">{typeLabel}</h3>
                     </div>
-                    <ul className="divide-y divide-[#2A2A2A] overflow-y-auto flex-1 min-h-0 scrollbar-hide-until-hover" style={{ maxHeight: "220px" }}>
+                    <ul className="divide-y divide-[#2A2A2A] overflow-y-auto flex-1 min-h-0 scrollbar-show-on-hover" style={{ maxHeight: "220px" }}>
                       {typeEvents.map((ev, idx) => {
                         const isActive = now >= ev.startTime && now < ev.endTime;
                         const startsIn = ev.startTime - now;
@@ -951,88 +971,18 @@ function HomeContent() {
                 );
               })}
             </div>
+            {scheduleByEventType.length > scheduleInitialCount && (
+              <button
+                type="button"
+                onClick={() => setScheduleExpanded((prev) => !prev)}
+                className="mt-4 w-full py-3 text-sm font-medium text-[var(--text-tertiary)] hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-colors"
+              >
+                {scheduleExpanded ? "Show less" : "Show More"}
+              </button>
+            )}
+            </>
           )}
         </section>
-
-            {/* Email Notifications Setup */}
-            <section className="mt-8 rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] overflow-hidden hover:border-[#3F3F3F] transition-all">
-              <button
-                onClick={() => setEmailAlertsExpanded(!emailAlertsExpanded)}
-                className="w-full flex items-center justify-between p-4 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <div className="text-left">
-                    <h3 className="text-base font-semibold text-[#ECECEC]">📧 Email Event Alerts</h3>
-                    {notificationsEnabled && (
-                      <p className="text-xs text-green-400">Active</p>
-                    )}
-                  </div>
-                </div>
-                <svg
-                  className={`h-5 w-5 text-[#8E8E8E] transition-transform ${emailAlertsExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {emailAlertsExpanded && (
-                <div className="p-4 pt-0 border-t border-[#2A2A2A]">
-                  <p className="text-sm text-[#B4B4B4] mb-4">Get instant email notifications when your favorite events go live!</p>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-[#ECECEC] mb-2">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="you@example.com"
-                        value={userEmail}
-                        onChange={(e) => setUserEmail(e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg bg-[#0D0D0D] border border-[#2A2A2A] text-[#ECECEC] placeholder-[#8E8E8E] focus:outline-none focus:border-blue-500 transition-colors"
-                      />
-                      <p className="text-xs text-[#8E8E8E] mt-1">Works great on iPhone! ✨</p>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        if (userEmail) {
-                          const enabled = !notificationsEnabled;
-                          setNotificationsEnabled(enabled);
-                          localStorage.setItem("userEmail", userEmail);
-                          localStorage.setItem("notificationsEnabled", enabled.toString());
-                          if (!enabled) {
-                            notifiedEventsRef.current = [];
-                          }
-                        }
-                      }}
-                      disabled={!userEmail}
-                      className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                        notificationsEnabled
-                          ? "bg-red-500 hover:bg-red-600 text-white"
-                          : "bg-blue-500 hover:bg-blue-600 text-white disabled:bg-[#2A2A2A] disabled:text-[#8E8E8E] disabled:cursor-not-allowed"
-                      }`}
-                    >
-                      {notificationsEnabled ? "🔕 Disable Alerts" : "🔔 Enable Alerts"}
-                    </button>
-
-                    {notificationsEnabled && (
-                      <div className="mt-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
-                        <p className="text-xs text-green-300">
-                          ✅ Alerts active for favorite events (Matriarch, Harvester, Dam Night Raids)
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </section>
           </>
         )}
 
@@ -1040,12 +990,14 @@ function HomeContent() {
         {activeTab === "trials" && (
           <>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-[#ECECEC] mb-2">Weekly Trials</h2>
-              <p className="text-[#B4B4B4] text-sm">
+              <h2 className="section-header mb-2 text-[clamp(1rem,2.5vw,1.4rem)] font-semibold text-white">
+                Weekly Trials
+              </h2>
+              <p className="text-[var(--text-tertiary)] text-sm">
                 {trialsWeekStart && trialsWeekEnd ? (
                   <>
                     <span>{new Date(trialsWeekStart).toLocaleDateString("en-US", { month: "short", day: "numeric" })} – {new Date(trialsWeekEnd).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                    <span className="ml-2 font-mono text-zinc-400">
+                    <span className="countdown ml-2 text-green-400">
                       {formatTrialsCountdown(
                         new Date(trialsWeekEnd + "T23:59:59").getTime() - now
                       )}{" "}
@@ -1059,151 +1011,25 @@ function HomeContent() {
             </div>
 
             {trials.length === 0 ? (
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] p-8 text-center">
-                <div className="text-[#B4B4B4] mb-2">Loading trials...</div>
+              <div className="card p-8 text-center backdrop-blur-sm">
+                <div className="text-[var(--text-tertiary)]">Loading trials...</div>
               </div>
             ) : (
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                {sortedTrials.map((trial) => (
-                  <div
-                    key={trial.id}
-                    className="rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] overflow-hidden hover:border-[#3F3F3F] transition-all flex flex-col min-w-0"
-                  >
-                    {/* Hero image at top */}
-                    <div className="relative h-24 w-full overflow-hidden bg-[#0D0D0D]">
-                      {trial.image ? (
-                        <Image
-                          src={trial.image}
-                          alt={trial.name}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 768px) 33vw, 100vw"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-amber-500/20 to-transparent" />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent" />
-                    </div>
-
-                    <div className="flex-1 p-4 flex flex-col min-h-0">
-                      <div className="mb-3">
-                        <div className="text-xs text-[#8E8E8E] capitalize">{trial.category}</div>
-                        <h3 className="truncate text-lg font-semibold text-[#ECECEC]">{trial.name}</h3>
-                      </div>
-
-                      {trial.actionsTo3Stars && (
-                        <div className="mb-3 rounded-lg bg-[#141414] px-2.5 py-1.5">
-                          <h4 className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-1">
-                            To reach 3★
-                          </h4>
-                          <p className="text-sm font-medium text-white">
-                            {trial.actionsTo3Stars}
-                          </p>
-                        </div>
-                      )}
-
-                      {trial.bestMaps && trial.bestMaps.length > 0 && (
-                        <div className="mb-3">
-                          <h4 className="text-[10px] font-semibold text-[#8E8E8E] uppercase tracking-wider mb-1.5">
-                            Best Maps
-                          </h4>
-                          <ul className="space-y-1">
-                            {trial.bestMaps.slice(0, 2).map((m, i) => (
-                              <li key={i} className="text-xs">
-                                <span className="text-amber-400/90 font-medium">{m.map}</span>
-                                <span className="text-[#B4B4B4]"> — {m.reason.slice(0, 50)}{m.reason.length > 50 ? "…" : ""}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          {trial.idealConditions && trial.idealConditions.length > 0 && (
-                            <div className="mt-1.5 flex flex-wrap gap-1">
-                              {trial.idealConditions.slice(0, 3).map((c) => (
-                                <span
-                                  key={c}
-                                  className="inline-flex items-center rounded bg-zinc-700/30 px-1.5 py-0.5 text-[10px] font-medium text-zinc-400"
-                                >
-                                  2× {c}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {(() => {
-                        const activeIdeal = getActiveIdealEventsForTrial(trial);
-                        return activeIdeal.length > 0 ? (
-                          <div className="mb-3 rounded-lg border border-green-500/40 bg-green-500/10 px-2.5 py-1.5">
-                            <div className="mb-1 flex items-center gap-1.5">
-                              <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
-                              <span className="text-[10px] font-semibold text-green-400 uppercase tracking-wider">Live</span>
-                            </div>
-                            <ul className="space-y-0.5">
-                              {activeIdeal.map((ev, i) => (
-                                <li key={i} className="text-xs font-medium text-green-400 flex items-center justify-between gap-2">
-                                  <span>{ev.name} on {ev.map}</span>
-                                  <span className="font-mono text-[10px] shrink-0">{formatRemaining(ev.endTime - now)}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : null;
-                      })()}
-
-                      {(trial.tips?.length || trial.loadout) && (
-                        <div className="mt-auto">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedTrials((prev) => {
-                                const next = new Set(prev);
-                                if (next.has(trial.id)) next.delete(trial.id);
-                                else next.add(trial.id);
-                                return next;
-                              })
-                            }
-                            className="mb-3 flex w-full items-center justify-center gap-1.5 text-xs font-medium text-[#B4B4B4] transition-colors hover:text-[#ECECEC]"
-                          >
-                            {expandedTrials.has(trial.id) ? "Show less" : "Show more"}
-                            {expandedTrials.has(trial.id) ? (
-                              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                              </svg>
-                            ) : (
-                              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                            )}
-                          </button>
-                          <div
-                            className={`overflow-hidden transition-all duration-150 ease-out ${
-                              expandedTrials.has(trial.id) ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 mb-0"
-                            }`}
-                          >
-                            {trial.tips && trial.tips.length > 0 && (
-                              <div className="mb-3">
-                                <h4 className="text-[10px] font-semibold text-[#8E8E8E] uppercase tracking-wider mb-1.5">
-                                  Tips
-                                </h4>
-                                <ul className="list-disc list-inside space-y-0.5 text-xs text-[#B4B4B4]">
-                                  {trial.tips.slice(0, 2).map((tip, i) => (
-                                    <li key={i}>{tip}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            {trial.loadout && (
-                              <div className="pt-2 border-t border-[#2A2A2A]">
-                                <p className="text-[10px] text-[#8E8E8E] uppercase tracking-wider mb-0.5">Loadout</p>
-                                <p className="text-xs text-[#B4B4B4]">{trial.loadout}</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
+              <div className="flex flex-col gap-3">
+                {sortedTrials.map((trial) => {
+                  const activeIdeal = getActiveIdealEventsForTrial(trial);
+                  const liveEv = activeIdeal[0];
+                  return (
+                    <MissionCard
+                      key={trial.id}
+                      mission={trial}
+                      isLive={activeIdeal.length > 0}
+                      liveEvent={liveEv ? { name: liveEv.name, map: liveEv.map, endTime: liveEv.endTime } : undefined}
+                      formatRemaining={formatRemaining}
+                      now={now}
+                    />
+                  );
+                })}
               </div>
             )}
           </>
@@ -1212,21 +1038,21 @@ function HomeContent() {
         {/* News Tab */}
         {activeTab === "news" && (
           <>
-            <div className="mb-6 flex items-center justify-between text-sm text-[#8E8E8E]">
+            <div className="mb-6 flex items-center justify-between text-sm text-[var(--text-tertiary)]">
               <div>
-                <span className="text-[#ECECEC]">Latest Arc Raiders News & Updates</span>
+                <span className="text-white">Latest Arc Raiders News & Updates</span>
               </div>
               <div>
                 Last updated:{" "}
-                <span className="text-[#ECECEC]">
+                <span className="date-mono text-white">
                   {newsLastUpdated ? new Date(newsLastUpdated).toLocaleTimeString() : "—"}
                 </span>
               </div>
             </div>
 
             {news.length === 0 ? (
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] p-8 text-center">
-                <div className="text-[#B4B4B4]">Loading news...</div>
+              <div className="card p-8 text-center backdrop-blur-sm">
+                <div className="text-[var(--text-tertiary)]">Loading news...</div>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -1240,11 +1066,11 @@ function HomeContent() {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group rounded-2xl border border-[#333333] bg-[#111111] overflow-hidden hover:border-[#4B5563] hover:shadow-lg transition-all cursor-pointer flex flex-col block"
+                      className="card group overflow-hidden cursor-pointer flex flex-col block backdrop-blur-sm"
                       title={item.description}
                     >
                       {/* Card image: from arcraiders.com when available */}
-                      <div className="relative w-full h-36 bg-[#050509]">
+                      <div className="relative w-full h-36 bg-[var(--bg-base)]">
                         {item.imageUrl ? (
                           <Image
                             src={item.imageUrl}
@@ -1265,7 +1091,7 @@ function HomeContent() {
                       </div>
 
                       {/* Card body: title, optional Patch Notes tag, date */}
-                      <div className="flex-1 p-4 bg-[#111111]">
+                      <div className="flex-1 p-4 bg-white/[0.02]">
                         <div className="flex items-center justify-between mb-2">
                           {isPatch ? (
                             <span className="inline-flex items-center rounded px-2 py-0.5 text-[11px] font-semibold bg-[#1F2933] text-[#FBBF24]">
@@ -1300,8 +1126,10 @@ function HomeContent() {
         {activeTab === "twitch" && (
           <>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-[#ECECEC] mb-2">Favorite Streamers</h2>
-              <p className="text-[#B4B4B4] text-sm">
+              <h2 className="section-header mb-2 text-[clamp(1rem,2.5vw,1.4rem)] font-semibold text-white">
+                Favorite Streamers
+              </h2>
+              <p className="text-[var(--text-tertiary)] text-sm">
                 Tracking: LuluLuvely, Tfue, Ninja, TheBurntPeanut, NICKMERCS, cloakzy, HutchMF
               </p>
             </div>
@@ -1314,8 +1142,8 @@ function HomeContent() {
                 </p>
               </div>
             ) : twitchStreamers.length === 0 ? (
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] p-8 text-center">
-                <div className="text-[#B4B4B4] mb-2">Loading streamers...</div>
+              <div className="card p-8 text-center backdrop-blur-sm">
+                <div className="text-[var(--text-tertiary)]">Loading streamers...</div>
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -1325,7 +1153,7 @@ function HomeContent() {
                     href={streamer.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative rounded-2xl border border-[#2A2A2A] bg-[#1a1a1a] overflow-hidden hover:border-purple-500/40 transition-all block"
+                    className="card group relative overflow-hidden block backdrop-blur-sm"
                   >
                     {/* Stream Thumbnail or Offline State */}
                     <div className="relative w-full h-48 bg-[#0D0D0D] flex items-center justify-center">

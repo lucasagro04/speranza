@@ -4,22 +4,32 @@
 @source "../app";
 
 :root {
-  /* OpenSea-Inspired Layered Surfaces */
-  --bg-base: #0c0d10;
+  /* NASA-punk / Retro-futuristic palette */
+  --font-display: var(--font-orbitron), sans-serif;
+  --font-body: var(--font-barlow), sans-serif;
+  --font-mono: var(--font-space-mono), monospace;
+
+  --bg-base: #0a0b10;
   --bg-surface: #1a1d24;
   --bg-elevated: #262b35;
   --bg-hover: #2d3340;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --border-card: rgba(255, 255, 255, 0.07);
 
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-medium: rgba(255, 255, 255, 0.12);
 
   /* Text */
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-primary: #ffffff;
+  --text-secondary: #c8ccd4;
+  --text-tertiary: #707888;
   --text-muted: rgba(255, 255, 255, 0.45);
 
   /* Accent */
+  --accent-amber: #f59e0b;
+  --accent-amber-hover: #fbbf24;
+  --accent-green: #22c55e;
   --accent-blue: #3b82f6;
   --accent-blue-hover: #2563eb;
 
@@ -32,41 +42,192 @@
 @theme inline {
   --color-background: var(--bg-base);
   --color-foreground: var(--text-primary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-barlow), sans-serif;
+  --font-mono: var(--font-space-mono), monospace;
 }
 
+/* Base layout with ambient glow and noise */
 body {
+  position: relative;
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
   line-height: 1.5;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 90% 10%,
+    rgba(59, 130, 246, 0.06) 0%,
+    transparent 60%
+  );
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+}
+
+/* Orbitron for section headers and hero text only - NOT card content */
+h1, h2, .section-header {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+/* Card titles use Barlow */
+.card h3, .card h4, .card h5, .card h6 {
+  font-family: var(--font-body);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Space Mono for timers, stats, countdowns */
+.timer, .stat-value, .countdown, .date-mono,
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Hero banner */
+.hero-banner {
+  position: relative;
+  height: clamp(320px, 50vh, 450px);
+  overflow: hidden;
+}
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(59, 130, 246, 0.3),
+    transparent
+  );
+  margin: 2rem 0;
+}
+
+/* Global card styling */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card.card-live {
+  border-top: 2px solid var(--accent-green);
+}
+
+/* Tag pills */
+.tag-pill {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 3px 8px;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  }
+  width: 6px;
+  height: 6px;
+}
 
 ::-webkit-scrollbar-track {
   background: var(--bg-base);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-elevated);
-  border-radius: 4px;
+  background: #3a3a3f;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-hover);
+  background: #4a4a50;
 }
 
-/* Hide scrollbar permanently; scrolling still works (wheel, touch, trackpad) */
+/* Firefox */
+* {
+  scrollbar-color: #3a3a3f var(--bg-base);
+}
+
+/* Text selection */
+::selection {
+  background: rgba(251, 191, 36, 0.25);
+  color: #fff;
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.5);
+}
+
+/* Scroll-triggered reveal */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-on-scroll[data-delay="1"] { transition-delay: 60ms; }
+.reveal-on-scroll[data-delay="2"] { transition-delay: 120ms; }
+.reveal-on-scroll[data-delay="3"] { transition-delay: 180ms; }
+.reveal-on-scroll[data-delay="4"] { transition-delay: 240ms; }
+.reveal-on-scroll[data-delay="5"] { transition-delay: 300ms; }
+.reveal-on-scroll[data-delay="6"] { transition-delay: 360ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .reveal-on-scroll.revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hide scrollbar for specific elements */
 .scrollbar-hide-until-hover {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
+
 .scrollbar-hide-until-hover::-webkit-scrollbar,
 .scrollbar-hide-until-hover::-webkit-scrollbar-track,
 .scrollbar-hide-until-hover::-webkit-scrollbar-thumb {
@@ -75,4 +236,45 @@ body {
   height: 0 !important;
   background: transparent !important;
   border: none !important;
+}
+
+/* Show scrollbar only when parent card is hovered (event schedule cards) */
+/* scrollbar-gutter: stable reserves space so scrollbar doesn't push content on hover */
+.scrollbar-show-on-hover {
+  scrollbar-gutter: stable;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-show-on-hover::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scrollbar-show-on-hover::-webkit-scrollbar-track,
+.scrollbar-show-on-hover::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.group:hover .scrollbar-show-on-hover {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3f var(--bg-base);
+}
+
+.group:hover .scrollbar-show-on-hover::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.group:hover .scrollbar-show-on-hover::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+
+.group:hover .scrollbar-show-on-hover::-webkit-scrollbar-thumb {
+  background: #3a3a3f;
+  border-radius: 3px;
+}
+
+.group:hover .scrollbar-show-on-hover::-webkit-scrollbar-thumb:hover {
+  background: #4a4a50;
 }
