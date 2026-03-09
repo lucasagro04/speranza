@@ -9,14 +9,14 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     return Response.json({ success: false, error: "ID required" }, { status: 400 });
   }
 
-  const trees = loadSavedTrees();
+  const trees = await loadSavedTrees();
   const idx = trees.findIndex((t) => t.id === id);
   if (idx < 0) {
     return Response.json({ success: false, error: "Build not found" }, { status: 404 });
   }
 
   trees.splice(idx, 1);
-  if (!saveSavedTrees(trees)) {
+  if (!(await saveSavedTrees(trees))) {
     return Response.json(
       { success: false, error: "Failed to delete. Storage may be read-only." },
       { status: 500 }
@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     return Response.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const trees = loadSavedTrees();
+  const trees = await loadSavedTrees();
   const idx = trees.findIndex((t) => t.id === id);
   if (idx < 0) {
     return Response.json({ success: false, error: "Build not found" }, { status: 404 });
@@ -70,7 +70,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     existing.buildOrder = Array.isArray(body.buildOrder) ? body.buildOrder : undefined;
   }
 
-  if (!saveSavedTrees(trees)) {
+  if (!(await saveSavedTrees(trees))) {
     return Response.json(
       { success: false, error: "Failed to update. Storage may be read-only." },
       { status: 500 }

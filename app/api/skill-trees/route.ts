@@ -4,7 +4,7 @@ import { loadSavedTrees, saveSavedTrees, isValidAllocations, type SavedSkillTree
 export type { BuildOrderEntry, SavedSkillTree } from "./helpers";
 
 export async function GET() {
-  const trees = loadSavedTrees();
+  const trees = await loadSavedTrees();
   return Response.json({ success: true, trees });
 }
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ success: false, error: "Total points cannot exceed 75" }, { status: 400 });
   }
 
-  const trees = loadSavedTrees();
+  const trees = await loadSavedTrees();
   const newTree: SavedSkillTree = {
     id: `st-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     username,
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   };
   trees.push(newTree);
 
-  if (!saveSavedTrees(trees)) {
+  if (!(await saveSavedTrees(trees))) {
     return Response.json(
       { success: false, error: "Failed to save. Storage may be read-only (e.g. on Vercel). Use a database for production." },
       { status: 500 }
