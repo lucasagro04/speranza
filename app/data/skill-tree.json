@@ -1,0 +1,71 @@
+{
+  "maxPoints": 85,
+  "trees": [
+    {
+      "id": "mobility",
+      "name": "Mobility",
+      "color": "#fdd333",
+      "skills": [
+        { "id": "nimble-climber", "name": "Nimble Climber", "icon": "Mountain", "description": "Speeds up climbing and vaulting.", "maxPoints": 5, "requires": [] },
+        { "id": "marathon-runner", "name": "Marathon Runner", "icon": "Footprints", "description": "Lowers stamina costs while moving.", "maxPoints": 5, "requires": ["nimble-climber"] },
+        { "id": "slip-and-slide", "name": "Slip and Slide", "icon": "Wind", "description": "Makes slides longer and faster.", "maxPoints": 5, "requires": ["nimble-climber"] },
+        { "id": "youthful-lungs", "name": "Youthful Lungs", "icon": "Wind", "description": "Raises maximum stamina.", "maxPoints": 5, "requires": ["marathon-runner"] },
+        { "id": "sturdy-ankles", "name": "Sturdy Ankles", "icon": "Shield", "description": "Reduces fall damage from non-lethal heights.", "maxPoints": 5, "requires": ["slip-and-slide"] },
+        { "id": "carry-the-momentum", "name": "Carry The Momentum", "icon": "Zap", "description": "After a sprint dodge roll, sprinting is free for a short time (cooldown applies).", "maxPoints": 1, "requires": ["youthful-lungs"], "treeThreshold": 15 },
+        { "id": "calming-stroll", "name": "Calming Stroll", "icon": "CircleDot", "description": "Walking regenerates stamina as if you were standing still.", "maxPoints": 1, "requires": ["sturdy-ankles"], "treeThreshold": 15 },
+        { "id": "effortless-roll", "name": "Effortless Roll", "icon": "RotateCcw", "description": "Reduces stamina cost of dodge rolls.", "maxPoints": 5, "requires": ["carry-the-momentum"] },
+        { "id": "crawl-before-you-walk", "name": "Crawl Before You Walk", "icon": "MoveHorizontal", "description": "Increases crawl speed while downed.", "maxPoints": 5, "requires": ["carry-the-momentum", "calming-stroll"], "requiresAny": true },
+        { "id": "off-the-wall", "name": "Off The Wall", "icon": "ArrowUp", "description": "Extends wall-leap distance.", "maxPoints": 5, "requires": ["calming-stroll"] },
+        { "id": "heroic-leap", "name": "Heroic Leap", "icon": "ArrowUpRight", "description": "Increases sprint-dodge roll distance.", "maxPoints": 5, "requires": ["effortless-roll"] },
+        { "id": "vigorous-vaulter", "name": "Vigorous Vaulter", "icon": "Activity", "description": "Removes the vault slow when exhausted.", "maxPoints": 1, "requires": ["crawl-before-you-walk"] },
+        { "id": "ready-to-roll", "name": "Ready To Roll", "icon": "Circle", "description": "Widens the timing window for a Recovery Roll when falling.", "maxPoints": 5, "requires": ["off-the-wall"] },
+        { "id": "vaults-on-vaults", "name": "Vaults on Vaults on Vaults", "icon": "Infinity", "description": "Makes vaulting cost no stamina.", "maxPoints": 1, "requires": ["heroic-leap", "vigorous-vaulter"], "requiresAny": true, "treeThreshold": 36 },
+        { "id": "vault-spring", "name": "Vault Spring", "icon": "ArrowUpFromLine", "description": "Lets you jump at the end of a vault.", "maxPoints": 1, "requires": ["vigorous-vaulter", "ready-to-roll"], "requiresAny": true, "treeThreshold": 36 }
+      ]
+    },
+    {
+      "id": "survival",
+      "name": "Survival",
+      "color": "#f4101b",
+      "skills": [
+        { "id": "agile-croucher", "name": "Agile Croucher", "icon": "Move", "description": "Increases movement speed while crouched.", "maxPoints": 5, "requires": [] },
+        { "id": "looters-instincts", "name": "Looter's Instincts", "icon": "Search", "description": "Reveals items in containers faster while searching.", "maxPoints": 5, "requires": ["agile-croucher"] },
+        { "id": "revitalizing-squat", "name": "Revitalizing Squat", "icon": "Heart", "description": "Improves stamina regeneration while crouched.", "maxPoints": 5, "requires": ["agile-croucher"] },
+        { "id": "silent-scavenger", "name": "Silent Scavenger", "icon": "VolumeX", "description": "Reduces noise created when looting.", "maxPoints": 5, "requires": ["looters-instincts"] },
+        { "id": "in-round-crafting", "name": "In-round Crafting", "icon": "Wrench", "description": "Enables field crafting while Topside.", "maxPoints": 1, "requires": ["revitalizing-squat"] },
+        { "id": "suffer-in-silence", "name": "Suffer In Silence", "icon": "Volume1", "description": "Makes your movement quieter while critically hurt.", "maxPoints": 1, "requires": ["silent-scavenger"], "treeThreshold": 15 },
+        { "id": "good-as-new", "name": "Good As New", "icon": "HeartPulse", "description": "Boosts stamina regeneration during healing effects.", "maxPoints": 1, "requires": ["in-round-crafting"], "treeThreshold": 15 },
+        { "id": "broad-shoulders", "name": "Broad Shoulders", "icon": "Package", "description": "Raises maximum carry weight.", "maxPoints": 5, "requires": ["suffer-in-silence"] },
+        { "id": "traveling-tinkerer", "name": "Traveling Tinkerer", "icon": "Hammer", "description": "Unlocks additional field-craftable items.", "maxPoints": 1, "requires": ["suffer-in-silence", "good-as-new"], "requiresAny": true },
+        { "id": "stubborn-mule", "name": "Stubborn Mule", "icon": "Weight", "description": "Lessens how much over-encumbrance slows stamina regeneration.", "maxPoints": 5, "requires": ["good-as-new"] },
+        { "id": "looters-luck", "name": "Looter's Luck", "icon": "Sparkles", "description": "Gives a chance to reveal twice as many items while looting.", "maxPoints": 5, "requires": ["broad-shoulders"] },
+        { "id": "one-raiders-scraps", "name": "One Raider's Scraps", "icon": "Box", "description": "Small chance to find extra field-crafted items in Raider containers.", "maxPoints": 5, "requires": ["traveling-tinkerer"] },
+        { "id": "three-deep-breaths", "name": "Three Deep Breaths", "icon": "Wind", "description": "Recovers stamina more quickly after an ability drains it.", "maxPoints": 5, "requires": ["stubborn-mule"] },
+        { "id": "security-breach", "name": "Security Breach", "icon": "Key", "description": "Allows breaching of Security Lockers.", "maxPoints": 1, "requires": ["looters-luck", "one-raiders-scraps"], "requiresAny": true, "treeThreshold": 36 },
+        { "id": "minesweeper", "name": "Minesweeper", "icon": "ShieldAlert", "description": "Enables disarming of mines and explosive deployables at close range.", "maxPoints": 1, "requires": ["one-raiders-scraps", "three-deep-breaths"], "requiresAny": true, "treeThreshold": 36 }
+      ]
+    },
+    {
+      "id": "conditioning",
+      "name": "Conditioning",
+      "color": "#2afe7f",
+      "skills": [
+        { "id": "used-to-the-weight", "name": "Used To The Weight", "icon": "Shield", "description": "Reduces the movement speed penalty while carrying a shield.", "maxPoints": 5, "requires": [] },
+        { "id": "blast-born", "name": "Blast-Born", "icon": "Volume2", "description": "Dampens the hearing impact of nearby explosions.", "maxPoints": 5, "requires": ["used-to-the-weight"] },
+        { "id": "gentle-pressure", "name": "Gentle Pressure", "icon": "VolumeX", "description": "Lowers the noise you make when breaching.", "maxPoints": 5, "requires": ["used-to-the-weight"] },
+        { "id": "fight-or-flight", "name": "Fight Or Flight", "icon": "Zap", "description": "Restores a set amount of stamina when you take combat damage (has a cooldown).", "maxPoints": 5, "requires": ["blast-born"] },
+        { "id": "proficient-pryer", "name": "Proficient Pryer", "icon": "Wrench", "description": "Shortens the time to breach doors and containers.", "maxPoints": 5, "requires": ["gentle-pressure"] },
+        { "id": "survivors-stamina", "name": "Survivor's Stamina", "icon": "Heart", "description": "Speeds up stamina regeneration when you're critically hurt.", "maxPoints": 1, "requires": ["fight-or-flight"], "treeThreshold": 15 },
+        { "id": "unburdened-roll", "name": "Unburdened Roll", "icon": "RotateCcw", "description": "After your shield breaks, your first dodge roll within a brief window costs no stamina.", "maxPoints": 1, "requires": ["proficient-pryer"], "treeThreshold": 15 },
+        { "id": "downed-but-determined", "name": "Downed But Determined", "icon": "Timer", "description": "Extends the time before you fully collapse when downed.", "maxPoints": 5, "requires": ["survivors-stamina"] },
+        { "id": "a-little-extra", "name": "A Little Extra", "icon": "Gift", "description": "Breaching an object yields some resources.", "maxPoints": 1, "requires": ["survivors-stamina", "unburdened-roll"], "requiresAny": true },
+        { "id": "effortless-swing", "name": "Effortless Swing", "icon": "Swords", "description": "Reduces stamina cost of melee abilities.", "maxPoints": 5, "requires": ["unburdened-roll"] },
+        { "id": "turtle-crawl", "name": "Turtle Crawl", "icon": "Shield", "description": "Lowers damage taken while you're downed.", "maxPoints": 5, "requires": ["downed-but-determined"] },
+        { "id": "loaded-arms", "name": "Loaded Arms", "icon": "Dumbbell", "description": "Decreases how much your equipped weapon adds to encumbrance.", "maxPoints": 1, "requires": ["a-little-extra"] },
+        { "id": "sky-clearing-swing", "name": "Sky-Clearing Swing", "icon": "Crosshair", "description": "Increases melee damage to drones.", "maxPoints": 5, "requires": ["effortless-swing"] },
+        { "id": "back-on-your-feet", "name": "Back On Your Feet", "icon": "HeartPulse", "description": "Regenerates health up to a limit when critically hurt.", "maxPoints": 1, "requires": ["turtle-crawl", "loaded-arms"], "requiresAny": true, "treeThreshold": 36 },
+        { "id": "flyswatter", "name": "Flyswatter", "icon": "Bug", "description": "Destroys Wasps and Turrets with a single melee hit.", "maxPoints": 1, "requires": ["loaded-arms", "sky-clearing-swing"], "requiresAny": true, "treeThreshold": 36 }
+      ]
+    }
+  ]
+}

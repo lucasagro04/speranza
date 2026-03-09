@@ -443,6 +443,72 @@
         "Extract quickly—don't get greedy"
       ],
       "loadout": "Free loadout recommended. Minimal risk."
+    },
+    "destroy-arc-enemies-swamp": {
+      "id": "destroy-arc-enemies-swamp",
+      "name": "Destroy ARC Enemies in the Swamp",
+      "category": "combat",
+      "actionsTo3Stars": "~2 Leapers/Rocketeers with 2× or mix of smaller ARC",
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Dam Battlegrounds", "reason": "Swamp area—Hydroponic Dome Complex has Rocketeers and Leapers; combine with Damage Rocketeers/Leapers/Bastions trial" }
+      ],
+      "idealConditions": ["Night Raid", "EM Storm", "Cold Snap", "Locked Gate", "Hidden Bunker"],
+      "tips": [
+        "Rocketeers and Leapers yield most points—focus on them",
+        "Fireballs, Pops, Wasps give fewer points; combine with damage trial for efficiency"
+      ],
+      "strategies": [
+        "Land near Hydroponic Dome Complex in the swamp",
+        "Destroy Leaper and Rocketeer for both this and Damage trial in one run",
+        "Extract after hitting 4,000+ points"
+      ],
+      "loadout": "Mobility + DPS. Hullcracker or Anvil IV. Heavy ammo. Ziplines for rotation."
+    },
+    "open-containers-traffic-tunnels": {
+      "id": "open-containers-traffic-tunnels",
+      "name": "Open Containers Inside the Traffic Tunnels",
+      "category": "scavenging",
+      "actionsTo3Stars": "~8–12 containers with 2×",
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "The Blue Gate", "reason": "Locked Gate condition—find 4 keys (Reinforced Reception, Raider's Refuge, Pilgrim's Peak, Ancient Fort), open gate, loot tunnel containers" }
+      ],
+      "idealConditions": ["Locked Gate"],
+      "tips": [
+        "Keys spawn in lootable containers at the 4 locations; small slip of paper",
+        "Gate Control Room needs all 4 keys; team up to speed up key collection",
+        "PvP risk in tunnels—extract once you hit 3 stars"
+      ],
+      "strategies": [
+        "Load during Locked Gate condition on The Blue Gate",
+        "Search each location for keys, then Gate Control Room",
+        "Once gate opens, loot tunnel containers quickly and extract"
+      ],
+      "loadout": "Mobility. No heavy combat needed. Smoke for escapes."
+    },
+    "search-raider-caches": {
+      "id": "search-raider-caches",
+      "name": "Search Raider Caches",
+      "category": "scavenging",
+      "actionsTo3Stars": "~8–12 caches with 2×",
+      "targetFor3Stars": 4000,
+      "bestMaps": [
+        { "map": "Dam Battlegrounds", "reason": "Highest Raider Cache density; listen for ticking/humming sound" },
+        { "map": "Buried City", "reason": "Strong cache density; outskirts and rural areas" }
+      ],
+      "idealConditions": ["Hurricane", "Uncovered Caches"],
+      "tips": [
+        "Listen for humming/ticking sound; caches spawn off main paths in brush",
+        "Hurricane gives 2× points; Uncovered Caches condition makes them easier to spot",
+        "Not on Stella Montis—use Dam, Buried City, Spaceport, or Blue Gate"
+      ],
+      "strategies": [
+        "Move through outskirts and rural areas rather than dense POIs",
+        "Check low vegetation, fence lines, near walls",
+        "Extract immediately after hitting 4,000+ points"
+      ],
+      "loadout": "Mobility. No heavy combat. Minimal gear for quick extraction."
     }
   },
   "currentWeekOverride": {

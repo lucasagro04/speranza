@@ -1,23 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { MissionCard } from "./components/MissionCard";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { SkillTreeBuilder } from "./components/SkillTreeBuilder";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function useRevealOnScroll<T extends HTMLElement>() {
   const ref = useRef<T>(null);
-  const [revealed, setRevealed] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => e.isIntersecting && setRevealed(true),
-      { threshold: 0.05, rootMargin: "0px 0px -40px 0px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const [revealed, setRevealed] = useState(true); // Always visible to avoid SSR/hydration issues
   return { ref, revealed };
 }
 
@@ -46,7 +37,7 @@ type NewsItem = {
   imageUrl?: string;
 };
 
-type Tab = "events" | "trials" | "news" | "twitch";
+type Tab = "events" | "trials" | "news" | "twitch" | "skill-tree";
 
 type TrialItem = {
   id: string;
@@ -108,11 +99,10 @@ function formatTrialsCountdown(ms: number) {
   return `${pad(s)}s`;
 }
 
-const TABS: Tab[] = ["events", "trials", "twitch", "news"];
+const TABS: Tab[] = ["events", "trials", "twitch", "news", "skill-tree"];
 
 function HomeContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>("events");
   const [events, setEvents] = useState<EventItem[]>([]);
   const [trials, setTrials] = useState<TrialItem[]>([]);
@@ -130,7 +120,7 @@ function HomeContent() {
   const [playerStatsLastUpdated, setPlayerStatsLastUpdated] = useState<number | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; value: number; date: string } | null>(null);
 
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(0);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const [newsLastUpdated, setNewsLastUpdated] = useState<number | null>(null);
   const [scheduleExpanded, setScheduleExpanded] = useState(false);
@@ -153,14 +143,16 @@ function HomeContent() {
 
   // Sync tab from URL (e.g. ?tab=events)
   useEffect(() => {
-    const tab = searchParams.get("tab");
+    const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+    const tab = params.get("tab");
     if (tab && TABS.includes(tab as Tab)) {
       setActiveTab(tab as Tab);
     }
-  }, [searchParams]);
+  }, []);
 
-  // Tick every second
+  // Tick every second (initial value set on mount to avoid hydration mismatch)
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
@@ -176,20 +168,24 @@ function HomeContent() {
 
     async function load() {
       try {
-        const res = await fetch("/api/events");
-        const json = (await res.json()) as ApiResponse;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15_000);
+        const res = await fetch("/api/events", { signal: controller.signal });
+        clearTimeout(timeoutId);
+        const json = (await res.json()) as ApiResponse & { error?: string };
         if (!alive) return;
 
-        if (json.data && json.data.length > 0) {
+        const data = Array.isArray(json.data) ? json.data : [];
+        if (data.length > 0) {
           setError(null);
-          setEvents(json.data);
+          setEvents(data);
           setLastUpdated(Date.now());
         } else if (eventsLengthRef.current === 0) {
-          setError("MetaForge API temporarily unavailable - retrying...");
+          setError(json.error ?? "MetaForge API temporarily unavailable - retrying...");
         }
-      } catch {
+      } catch (err) {
         if (alive && eventsLengthRef.current === 0) {
-          setError("Connection error - retrying...");
+          setError(err instanceof Error && err.name === "AbortError" ? "Request timed out - retrying..." : "Connection error - retrying...");
         }
       }
     }
@@ -244,11 +240,14 @@ function HomeContent() {
 
     async function loadPlayerStats() {
       try {
-        const res = await fetch(`/api/player-stats?period=${trendsPeriod}`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12_000);
+        const res = await fetch(`/api/player-stats?period=${trendsPeriod}`, { signal: controller.signal });
+        clearTimeout(timeoutId);
         const json = await res.json();
         if (!alive) return;
 
-        if (json.totalOnlinePlayers !== undefined && json.trends) {
+        if (json.totalOnlinePlayers !== undefined && Array.isArray(json.trends)) {
           setTotalOnlinePlayers(json.totalOnlinePlayers);
           setPlayerTrends(json.trends);
           setPlayerStatsLastUpdated(Date.now());
@@ -349,7 +348,7 @@ function HomeContent() {
     };
   }, [activeTab]);
 
-  const EXCLUDED_EVENT_NAMES = ["hidden bunker", "launch tower loot", "lock gate", "locked gate"];
+  const EXCLUDED_EVENT_NAMES = ["hidden bunker", "launch tower loot"];
   const isExcludedEvent = useCallback((ev: EventItem) => {
     const n = ev.name.toLowerCase();
     return EXCLUDED_EVENT_NAMES.some((excluded) => n.includes(excluded));
@@ -385,6 +384,7 @@ function HomeContent() {
     if (n.includes("rust belt")) return "Rust Belt";
     if (n.includes("north line")) return "North Line";
     if (n.includes("duck")) return "Duck";
+    if (n.includes("locked gate")) return "Locked Gate";
     return ev.name;
   }, []);
 
@@ -411,14 +411,16 @@ function HomeContent() {
     return false;
   }, []);
 
-  // Get active events that are ideal for a trial (2× modifier on a best map)
+  // Get active events that are ideal for a trial (2× modifier on the PRIMARY best map only)
+  // Only show LIVE when the event is on the top recommended map to avoid confusion
   const getActiveIdealEventsForTrial = useCallback(
     (trial: TrialItem): EventItem[] => {
       if (!trial.idealConditions?.length || !trial.bestMaps?.length) return [];
+      const primaryMap = trial.bestMaps[0].map;
       return activeForTrials.filter(
         (ev) =>
           trial.idealConditions!.some((c) => eventMatchesTrialCondition(ev.name, c)) &&
-          trial.bestMaps!.some((m) => eventMapMatchesTrialMap(ev.map, m.map))
+          eventMapMatchesTrialMap(ev.map, primaryMap)
       );
     },
     [activeForTrials, eventMatchesTrialCondition, eventMapMatchesTrialMap]
@@ -545,18 +547,18 @@ function HomeContent() {
   const setTab = useCallback(
     (tab: Tab) => {
       setActiveTab(tab);
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
       params.set("tab", tab);
       router.replace(`/?${params.toString()}`, { scroll: false });
     },
-    [router, searchParams]
+    [router]
   );
 
   return (
-    <main className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] relative">
+    <main className="relative isolate min-h-screen overflow-x-hidden bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* Hero Banner - partial height */}
       <section
-        className="hero-banner relative h-[clamp(320px,50vh,450px)] overflow-hidden"
+        className="hero-banner relative z-0 h-[clamp(320px,50vh,450px)] overflow-hidden"
         aria-label="Hero"
       >
         <div
@@ -594,7 +596,7 @@ function HomeContent() {
         </div>
       </section>
 
-      <div className="relative z-10 mx-auto max-w-5xl px-6 py-10">
+      <div className="relative z-20 mx-auto max-w-5xl px-6 py-10">
         <header className="mb-8 flex flex-col gap-4">
           {/* Tab Navigation */}
           <div className="flex flex-wrap gap-2">
@@ -616,7 +618,7 @@ function HomeContent() {
                   : "bg-transparent text-[var(--text-tertiary)] border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
-              Weekly Trials
+              Trials
             </button>
             <button
               onClick={() => setTab("twitch")}
@@ -637,6 +639,16 @@ function HomeContent() {
               }`}
             >
               News
+            </button>
+            <button
+              onClick={() => setTab("skill-tree")}
+              className={`px-5 py-2.5 text-sm font-medium rounded-full border transition-all duration-300 ${
+                activeTab === "skill-tree"
+                  ? "bg-white text-[var(--bg-base)] border-white"
+                  : "bg-transparent text-[var(--text-tertiary)] border-white/20 hover:border-white/50 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              Skill Tree
             </button>
           </div>
         </header>
@@ -945,8 +957,16 @@ function HomeContent() {
                             style={{ paddingLeft: "1.3rem", paddingRight: "1.3rem" }}
                           >
                             <div className="min-w-0 flex-1">
-                              <div className="font-medium text-[#ECECEC] text-sm truncate">{ev.map || "—"}</div>
-                              <div className="text-[10px] text-[#8E8E8E]">
+                              <div className="font-medium text-[#ECECEC] text-sm flex items-center gap-2 min-w-0">
+                                <span className="truncate">{ev.map || "—"}</span>
+                                {isActive && (
+                                  <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[12px] text-[#8E8E8E]">
                                 {new Date(ev.startTime).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })} – {new Date(ev.endTime).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
                               </div>
                             </div>
@@ -954,12 +974,12 @@ function HomeContent() {
                               {isActive ? (
                                 <>
                                   <div className="font-mono text-xs text-green-400">{formatRemaining(endsIn)}</div>
-                                  <div className="text-[9px] text-[#8E8E8E]">ends in</div>
+                                  <div className="text-[12px] text-[#8E8E8E]">ends in</div>
                                 </>
                               ) : (
                                 <>
                                   <div className={`font-mono text-xs ${startsWithinHour ? "text-yellow-400" : "text-[#ECECEC]"}`}>{formatRemaining(startsIn)}</div>
-                                  <div className="text-[9px] text-[#8E8E8E]">starts in</div>
+                                  <div className="text-[12px] text-[#8E8E8E]">starts in</div>
                                 </>
                               )}
                             </div>
@@ -991,7 +1011,7 @@ function HomeContent() {
           <>
             <div className="mb-6">
               <h2 className="section-header mb-2 text-[clamp(1rem,2.5vw,1.4rem)] font-semibold text-white">
-                Weekly Trials
+                Trials
               </h2>
               <p className="text-[var(--text-tertiary)] text-sm">
                 {trialsWeekStart && trialsWeekEnd ? (
@@ -1015,7 +1035,7 @@ function HomeContent() {
                 <div className="text-[var(--text-tertiary)]">Loading trials...</div>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sortedTrials.map((trial) => {
                   const activeIdeal = getActiveIdealEventsForTrial(trial);
                   const liveEv = activeIdeal[0];
@@ -1121,6 +1141,9 @@ function HomeContent() {
             )}
           </>
         )}
+
+        {/* Skill Tree Tab */}
+        {activeTab === "skill-tree" && <SkillTreeBuilder />}
 
         {/* Twitch Tab */}
         {activeTab === "twitch" && (
@@ -1247,13 +1270,5 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return (
-    <Suspense fallback={
-      <main className="min-h-screen bg-[#0D0D0D] text-[#ECECEC] flex items-center justify-center">
-        <div className="text-[#8E8E8E]">Loading...</div>
-      </main>
-    }>
-      <HomeContent />
-    </Suspense>
-  );
+  return <HomeContent />;
 }

@@ -60,14 +60,18 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Fetch player stats from arcraiders.gg
+    // Fetch player stats from arcraiders.gg (with timeout to avoid hanging)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const response = await fetch("https://arcraiders.gg/player-stats", {
+      signal: controller.signal,
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
       next: { revalidate: 60 },
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch player stats: ${response.status}`);

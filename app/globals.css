@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* Ensure Tailwind scans app directory for utility classes */
-@source "../app";
+/* Explicit content paths - helps avoid HMR/cache issues with Tailwind v4 + Next.js */
+@source "../app/**/*.{ts,tsx,js,jsx}";
 
 :root {
   /* NASA-punk / Retro-futuristic palette */
@@ -73,7 +73,7 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   opacity: 0.025;
 }

@@ -145,7 +145,7 @@ function getConditionTagClass(condition: string): string {
 const WEEK_END = new Date("2026-03-08T23:59:59").getTime();
 
 export default function WeeklyTrialsDashboard() {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(0);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [liveEndTimes, setLiveEndTimes] = useState<Record<string, number>>({});
 
@@ -158,6 +158,7 @@ export default function WeeklyTrialsDashboard() {
   }, []);
 
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);

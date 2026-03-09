@@ -37,12 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${orbitron.variable} ${barlow.variable} ${spaceMono.variable}`}>
+    <html lang="en" className={`${orbitron.variable} ${barlow.variable} ${spaceMono.variable}`} style={{ background: "#0a0b10", color: "#ffffff" }}>
       <head>
         <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
       </head>
       <body
         className={`${orbitron.variable} ${barlow.variable} ${spaceMono.variable} antialiased`}
+        style={{ background: "#0a0b10", color: "#ffffff" }}
       >
         {children}
       </body>

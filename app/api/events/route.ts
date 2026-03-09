@@ -8,10 +8,17 @@ export async function GET() {
   const url = "https://metaforge.app/api/arc-raiders/events-schedule";
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
     const res = await fetch(url, {
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "Mozilla/5.0 (compatible; ArcTimers/1.0; +https://github.com/arc-timers)",
+      },
+      signal: controller.signal,
       next: { revalidate: 60 },
     });
+    clearTimeout(timeoutId);
 
     if (res.ok) {
       const data = await res.json();
